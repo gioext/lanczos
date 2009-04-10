@@ -11,16 +11,21 @@ module Image
 
     def self.load(file)
       open(file, 'rb') do |f|
-        type = f.gets.strip
-        width, height = f.gets.strip.split(' ').map { |d| d.to_i } 
-        depth = f.gets.strip.to_i
+        getline = lambda {
+          while line = f.gets.strip
+            return line unless line[0, 1] == '#' || line.empty?
+          end
+        }
+        type = getline.call
+        width, height = getline.call.split(' ').map { |d| d.to_i } 
+        depth = getline.call.to_i
         pixel_string = f.read
         data = pixel_string.unpack('C*')
         img = self.new(width, height)
         img.set_data(data)
       end
     rescue => ex
-      ptus ex
+      puts ex
     end
 
     def get(x, y)
@@ -50,7 +55,7 @@ module Image
 end
 
 if __FILE__ == $0
-  img = Image::PPM.new(100, 100)
-#  img = Image::PPM.load('test.ppm')
+#  img = Image::PPM.new(100, 100)
+  img = Image::PPM.load('test.ppm')
   img.write('sample.ppm')
 end
