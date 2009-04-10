@@ -1,6 +1,4 @@
-require 'rubygems'
-require 'RMagick'
-require 'pureimage'
+require File.dirname(__FILE__) + '/image.rb'
 
 def sinc(x)
   Math.sin(Math::PI * x) / (Math::PI * x)
@@ -29,16 +27,16 @@ def filter(x)
   end
 end
 
-img = Magick::ImageList.new('test.png')
+img = Image::PPM.load('test.ppm')
 
-sw = img.columns
-sh = img.rows
+sw = img.width
+sh = img.height
 n = 3
-scale = 10 
+scale = 2 
 dw = (sw * scale).to_i
 dh = (sh * scale).to_i
 
-dist = PureImage::Image.new(dw, dh, 0xffffff, false)
+dist = Image::PPM.new(dw, dh)
 
 dh.times do |h|
   dw.times do |w|
@@ -51,13 +49,13 @@ dh.times do |h|
     weight_total = 0
     y_range.each do |y|
       x_range.each do |x|
-        pix = img.pixel_color(x, y)
+        pix = img.get(x, y)
         xl = ((x + 0.5) - x0).abs
         yl = ((y + 0.5) - y0).abs
         weight = lanczos(xl, n) * lanczos(yl, n)
-        r += pix.red / 256 * weight
-        g += pix.green / 256 * weight
-        b += pix.blue / 256 * weight
+        r += pix[0] * weight
+        g += pix[1] * weight
+        b += pix[2] * weight
         weight_total += weight
       end
     end
@@ -70,9 +68,8 @@ dh.times do |h|
     g = filter(g)
     b = filter(b)
 
-    dist.set(w, h, [r, g, b, 255]);
+    dist.set(w, h, [r, g, b]);
   end
 end
 
-
-PureImage::PNGIO.new.save(dist, 'sample.png')
+dist.write('sample.ppm')
