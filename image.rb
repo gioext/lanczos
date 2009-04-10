@@ -29,14 +29,19 @@ module Image
     end
 
     def get(x, y)
+      raise StandardError, "over width" if x > @width
+      raise StandardError, "over height" if x > @height
       @data.slice((x + y * @width) * 3, 3)
     end
 
     def set(x, y, pixel) 
+      raise StandardError, "over width" if x > @width
+      raise StandardError, "over height" if x > @height
       @data[(x + y * @width) * 3, 3] = pixel
     end
 
     def set_data(data)
+      raise StandardError "over data size" unless @data.length == data.length
       @data = data
       self
     end
