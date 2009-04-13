@@ -18,25 +18,23 @@ describe Image::PPM do
 
   it "get pixel" do
     @img.get(10, 10).should == [255, 255, 255]
-    @img.get(101, 10)
-    @img.get(100, 201)
+    lambda { @img.get(101, 10) }.should raise_error
+    lambda { @img.get(100, 201) }.should raise_error
   end
 
   it "set pixel" do
     @img.set(10, 10, [1, 2, 3])
     @img.get(10, 10).should == [1, 2, 3]
 
-    @img.set(101, 10, [1, 2, 3])
-    @img.set(101, 10, [1, 2, 3])
-  end
-
-  it "set data" do
+    lambda { @img.set(101, 10, [1, 2, 3]) }.should raise_error
+    lambda { @img.set(101, 10, [1, 2, 3]) }.should raise_error
   end
 
   it "load ppm" do
     @img = Image::PPM.load('test.ppm')
     @img.width.should == 77
     @img.height.should == 59
+    @img.data.length.should == 77 * 59 * 3
   end
 
   it "save ppm" do
