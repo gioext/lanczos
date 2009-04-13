@@ -30,14 +30,15 @@ def filter(x, total)
   end
 end
 
-img = Image::PPM.load('test.ppm')
+img = Image::PPM.load('sample.ppm')
 
 sw = img.width
 sh = img.height
 n = 3
-scale = 0.2 
+scale = 0.8 
 dw = (sw * scale).to_i
 dh = (sh * scale).to_i
+db = {}
 
 dist = Image::PPM.new(dw, dh)
 
@@ -56,7 +57,21 @@ dh.times do |h|
           pix = img.get(x, y)
           xl = ((x + 0.5) - x0).abs
           yl = ((y + 0.5) - y0).abs
-          weight = lanczos(xl, n) * lanczos(yl, n)
+          lanczos_x = 0
+          if db.has_key?(xl) 
+            lanczos_x = db[xl]
+          else
+            lanczos_x = lanczos(xl, n)
+            db[xl] = lanczos_x
+          end
+          lanczos_y = 0
+          if db.has_key?(yl) 
+            lanczos_y = db[yl]
+          else
+            lanczos_y = lanczos(yl, n)
+            db[yl] = lanczos_y
+          end
+          weight = lanczos_x * lanczos_y
           r += pix[0] * weight
           g += pix[1] * weight
           b += pix[2] * weight
@@ -81,7 +96,21 @@ dh.times do |h|
           pix = img.get(x, y)
           xl = (((x + 0.5) * scale )- x0).abs
           yl = (((y + 0.5) * scale )- y0).abs
-          weight = lanczos(xl, n) * lanczos(yl, n)
+          lanczos_x = 0
+          if db.has_key?(xl) 
+            lanczos_x = db[xl]
+          else
+            lanczos_x = lanczos(xl, n)
+            db[xl] = lanczos_x
+          end
+          lanczos_y = 0
+          if db.has_key?(yl) 
+            lanczos_y = db[yl]
+          else
+            lanczos_y = lanczos(yl, n)
+            db[yl] = lanczos_y
+          end
+          weight = lanczos_x * lanczos_y
           r += pix[0] * weight
           g += pix[1] * weight
           b += pix[2] * weight
@@ -96,5 +125,4 @@ dh.times do |h|
     dist.set(w, h, [r, g, b]);
   end
 end
-
-dist.write('sample.ppm')
+dist.write('sample2.ppm')
