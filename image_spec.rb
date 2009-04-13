@@ -18,6 +18,7 @@ describe Image::PPM do
 
   it "get pixel" do
     @img.get(10, 10).should == [255, 255, 255]
+
     lambda { @img.get(101, 10) }.should raise_error
     lambda { @img.get(100, 201) }.should raise_error
   end

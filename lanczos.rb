@@ -30,12 +30,12 @@ def filter(x, total)
   end
 end
 
-img = Image::PPM.load('test2.ppm')
+img = Image::PPM.load('test.ppm')
 
 sw = img.width
 sh = img.height
 n = 3
-scale = 0.5 
+scale = 0.2 
 dw = (sw * scale).to_i
 dh = (sh * scale).to_i
 
