@@ -114,20 +114,8 @@ dh.times do |h|
           pix = img.get(x, y)
           xl = (((x + 0.5) * scale )- x0).abs
           yl = (((y + 0.5) * scale )- y0).abs
-          lanczos_x = 0
-          if db.has_key?(xl) 
-            lanczos_x = db[xl]
-          else
-            lanczos_x = lanczos(xl, n)
-            db[xl] = lanczos_x
-          end
-          lanczos_y = 0
-          if db.has_key?(yl) 
-            lanczos_y = db[yl]
-          else
-            lanczos_y = lanczos(yl, n)
-            db[yl] = lanczos_y
-          end
+          lanczos_x = lanczos(xl, n)
+          lanczos_y = lanczos(yl, n)
           weight = lanczos_x * lanczos_y
           r += pix[0] * weight
           g += pix[1] * weight
